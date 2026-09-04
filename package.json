@@ -1,0 +1,13 @@
+{
+  "name": "tuyan-scientific-figure-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tuyan-scientific-figure/tests/*.test.mjs",
+    "check": "node --check tuyan-scientific-figure/scripts/*.mjs tuyan-scientific-figure/tests/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
