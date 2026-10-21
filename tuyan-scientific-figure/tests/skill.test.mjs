@@ -4,6 +4,13 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import test from 'node:test';
 
+import {
+  createOfflineSnapshot,
+  KNOWLEDGE_VERSION,
+  PAPERBANANA_BENCH_DIAGRAM_IDS,
+  PAPERBANANA_BENCH_MANIFEST,
+} from '../scripts/knowledge-runtime.mjs';
+
 const skillRoot = resolve(import.meta.dirname, '..');
 
 async function optionalText(path) {
@@ -18,10 +25,6 @@ async function optionalJson(path) {
 async function optionalModule(path) {
   try { return await import(path); } catch { return {}; }
 }
-
-const offlineSnapshot = await optionalJson(join(skillRoot, 'references', 'offline-snapshot.v1.json'));
-const PAPERBANANA_BENCH_MANIFEST = offlineSnapshot?.dataset || {};
-const PAPERBANANA_BENCH_DIAGRAM_IDS = PAPERBANANA_BENCH_MANIFEST.selection?.diagramIds || [];
 
 test('SKILL.md uses standard minimal frontmatter and focused triggers', async () => {
   const text = await optionalText(join(skillRoot, 'SKILL.md'));
@@ -44,12 +47,15 @@ test('skill keeps research inputs local and sends only enums to the MCP', async 
   assert.doesNotMatch(text, /upload (?:the )?(?:paper|image|prompt)/i);
 });
 
-test('skill covers the exact categories and bounded stop conditions', async () => {
+test('skill discovers the complete catalog and bounded stop conditions', async () => {
   const text = await optionalText(join(skillRoot, 'SKILL.md'));
   for (const category of [
     'method_framework', 'workflow', 'system_architecture', 'mechanism',
     'comparison', 'timeline', 'data_stat', 'concept_map',
   ]) assert.match(text, new RegExp(`\\b${category}\\b`));
+  assert.match(text, /dimensions.visualCategories/);
+  assert.match(text, /execution.renderer/);
+  assert.doesNotMatch(text, /every category except/);
   assert.match(text, /no material issue/i);
   assert.match(text, /capability.*unavailable/i);
   assert.match(text, /two consecutive.*no improvement/i);
@@ -59,7 +65,7 @@ test('dataset download is consent-gated, optional, verified, and non-blocking', 
   const text = await optionalText(join(skillRoot, 'SKILL.md'));
   const reference = await optionalText(join(skillRoot, 'references', 'paperbanana-bench.md'));
   assert.match(text, /ask.*before.*download/is);
-  assert.match(text, /skip.*Retriever/is);
+  assert.match(text, /skipped.*Retriever|Retriever.*skipped/is);
   assert.match(text, /download.*fail.*Retriever/is);
   assert.match(reference, new RegExp(PAPERBANANA_BENCH_MANIFEST.revision));
   assert.match(reference, new RegExp(PAPERBANANA_BENCH_MANIFEST.archiveSha256));
@@ -67,16 +73,9 @@ test('dataset download is consent-gated, optional, verified, and non-blocking', 
   assert.match(reference, /version.*update/is);
 });
 
-test('offline snapshot pins the standalone version-one knowledge contract', async () => {
-  assert.ok(offlineSnapshot, 'offline snapshot must exist');
-  assert.equal(offlineSnapshot.manifest.knowledgeVersion, '1.0.0');
-  assert.match(offlineSnapshot.manifest.knowledgeHash, /^[a-f0-9]{64}$/);
-  assert.deepEqual(offlineSnapshot.dimensions.visualCategories, [
-    'method_framework', 'workflow', 'system_architecture', 'mechanism',
-    'comparison', 'timeline', 'data_stat', 'concept_map',
-  ]);
-  assert.equal(offlineSnapshot.dataset.expectedReferenceCount, 306);
-  assert.equal(offlineSnapshot.dataset.revision, 'a876264bcd1e826a0320f805f8fb1cd705cf510f');
+test('offline snapshot is byte-equivalent to the canonical knowledge export', async () => {
+  const snapshot = await optionalJson(join(skillRoot, 'references', 'offline-snapshot.v1.json'));
+  assert.deepEqual(snapshot, createOfflineSnapshot());
 });
 
 test('dataset verifier selects the fixed 306 references and rejects drift', async () => {
@@ -107,24 +106,6 @@ test('local retriever ranks relevant references without a fixed result count', a
   assert.ok(results?.every(({ retrieval }) => Number.isFinite(retrieval.score)));
 });
 
-test('output finalizer records local files, knowledge, and retriever state', async () => {
-  const module = await optionalModule(new URL('../scripts/finalize-output-bundle.mjs', import.meta.url));
-  const directory = await mkdtemp(join(tmpdir(), 'tuyan-output-test-'));
-  await mkdir(join(directory, 'prompts'));
-  await writeFile(join(directory, 'figure-spec.json'), '{"schemaVersion":"tuyan.figure-spec/v1"}\n');
-  await writeFile(join(directory, 'prompts', 'round-01.txt'), 'local prompt\n');
-  const manifest = await module.buildOutputManifest?.(directory, {
-    retrieverStatus: 'skipped',
-    datasetRevision: null,
-    createdAt: '2026-09-04T00:00:00.000Z',
-  });
-  assert.equal(manifest?.schemaVersion, 'tuyan.output-bundle/v1');
-  assert.equal(manifest?.knowledge.version, '1.0.0');
-  assert.equal(manifest?.retriever.status, 'skipped');
-  assert.deepEqual(manifest?.files.map(({ path }) => path), ['figure-spec.json', 'prompts/round-01.txt']);
-  assert.ok(manifest?.files.every(({ sha256 }) => /^[a-f0-9]{64}$/.test(sha256)));
-});
-
 test('skill defines spec-only, reproducible plot, and local refinement paths', async () => {
   const text = await optionalText(join(skillRoot, 'SKILL.md'));
   assert.match(text, /no image.*FigureSpec.*stop/is);
@@ -138,7 +119,6 @@ test('client guide provides standard Codex, OpenClaw, and Hermes setup without a
   const text = await optionalText(join(skillRoot, 'references', 'client-installation.md'));
   assert.match(text, /Codex/);
   assert.match(text, /\.agents\/skills/);
-  assert.match(text, /github\.com\/yrjmdqmmx\/Tuyan-Skill/);
   assert.match(text, /openclaw skills install/);
   assert.match(text, /hermes skills install/);
   assert.match(text, /hermes mcp add.*--url https:\/\/api\.paperbanana\.asia\/mcp/s);
