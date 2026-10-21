@@ -1,6 +1,6 @@
 # Tuyan scientific figure Skill
 
-Knowledge **1.2.0**. Full scientific-figure taxonomy, versioned journal rules, local PNG/SVG workflows and artifact-bound qualitative review.
+Knowledge **1.2.1**. Full scientific-figure taxonomy, versioned journal rules, local PNG/SVG workflows and artifact-bound qualitative review.
 
 Install the complete [tuyan-scientific-figure](tuyan-scientific-figure) directory; see the [installation guide](tuyan-scientific-figure/references/client-installation.md). Node.js 24+ is needed for local helpers; no npm installation or model call is needed. Preserve existing installations before updating.
 
