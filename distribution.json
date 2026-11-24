@@ -1,6 +1,6 @@
 {
   "sourceRepository": "https://github.com/yrjmdqmmx/Tuyan",
-  "sourceRevision": "10b292b34b093c965bac8f7a5af679144d78f926",
+  "sourceRevision": "9372209c8bb635bf78235b818111e6469173688f",
   "sourceDirty": false,
   "knowledgeVersion": "1.2.1",
   "knowledgeHash": "69dcae01db1e67a637a715c5c110535f352cf7a15559f3cc5c06bdf66259cea1",
@@ -9,7 +9,7 @@
   "files": {
     "scripts/verify-distribution.mjs": "d0a23319aca2fae3f19642b3a1301c0d0ff55bb6057080ade0431f0863b68f11",
     "tuyan-scientific-figure/SKILL.md": "c12f0648df056edb8ff40a8123fc22557b1e97ddd0b706648be250183e076176",
-    "tuyan-scientific-figure/references/client-installation.md": "1a312ed711efbbaa04387a3ea5e8e586611ee484c23066849a5cf21b5862ba0c",
+    "tuyan-scientific-figure/references/client-installation.md": "07a201cd7213ac6886ad8168a89d1e56d9711cc486d4259faf65878cda98c9c1",
     "tuyan-scientific-figure/references/offline-snapshot.v1.json": "dcaabf2f3aa3df26ad3b002ab1b942e0f0018a7721db1c7118a991aaaf42329c",
     "tuyan-scientific-figure/references/paperbanana-bench.md": "b5beea87ecbd838cb04baf496856f1b704999c0f73cdb52b462c5963b134a123",
     "tuyan-scientific-figure/references/journal-rules.md": "901ab6d40f58389910dd93f701662e4f3b6cbd6086409bce12b5fd76f3aad234",
@@ -19,9 +19,9 @@
     "tuyan-scientific-figure/scripts/verify-paperbanana-bench.mjs": "14ce26e4443c46a7633bbf64a7d57e6f739559f77ed4cf2cfdf38d0ff0c6ad3c",
     "tuyan-scientific-figure/scripts/knowledge-runtime.mjs": "883a9a3b28f5e305d497a2edef1861d96d39e12b9fe805fcf9f6e0247dea7f4e",
     "tuyan-scientific-figure/scripts/prepare-knowledge.mjs": "7b1e36ed68f91b516caf8ca1f4962b8da8e4d5b7cfe71ba832136a9ad586c201",
-    "tuyan-scientific-figure/tests/skill.test.mjs": "041b22fe32a879c1a75c6443a6dc880071f811af2875e08c38f8f06ccac3ee80",
+    "tuyan-scientific-figure/tests/skill.test.mjs": "e203e0eaaa6e2aa428bc69b3460b5866f9a5dfad2c5b166e881e0196f5f3a87a",
     "tuyan-scientific-figure/tests/standalone.test.mjs": "060398982988644491ffcb1261b4e92b17225caac4535b68419ef396b5737f86",
-    "README.md": "a6a549111574fbb45cb4e14614514a1a9fd919c769752efc996ab82f15c3ec59",
+    "README.md": "f769e81b9ac0c8c60fce207caa5b598642a42e2b89b811b3027b3ce911a8cb15",
     "package.json": "0029e12115b3d68d37205da65a1f2dae411d72ca1afa4d95fb7fc7cdad77267c",
     ".github/workflows/verify.yml": "304b8e18f8b3fbab23c2c4b371591055341e9c01933b910e94c8d5adb45091be"
   }
